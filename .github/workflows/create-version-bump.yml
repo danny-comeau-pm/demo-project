@@ -1,0 +1,95 @@
+name: Deployment of Plante Moran Code Base
+run-name: Deploy ${{ inputs.environment }} Environment for Plante Moran Code Base with Version ${{ inputs.versionTag }} by ${{ github.actor }}
+on: 
+  workflow_dispatch:
+    inputs:
+      environment:
+      branch:
+        description: 'Branch Name'
+        required: true
+        type: string
+      versionTag:
+        description: 'Create Version'
+        required: true
+        type: string
+env:
+    BRANCH: ${{ inputs.branch }}
+    VERSION_TAG: ${{ inputs.versionTag }}
+jobs:
+    build-and-deploy-react-app:
+        runs-on: ubuntu-latest
+        strategy:
+          matrix:
+            node-version: [ 16.x ]
+        steps:
+        - name: Checkout Repository Via Tag
+          uses: actions/checkout@v3
+          
+        - name: Use Node.js ${{ matrix.node-version }}
+          uses: actions/setup-node@v3
+          with:
+            node-version: ${{ matrix.node-version }}
+
+        - name: Variable Subsitution
+          run: |
+            echo "Variable substitution happens here."
+            echo "My code example is commented out."
+
+        - name: NPM Install
+          run: npm insall
+    
+        - name: Set CI to false
+          run: echo "CI=false" >> $GITHUB_ENV
+
+        - name: JSON Variable Substitution
+          uses: microsoft/variable-substitution@v1
+          with:
+            files: 'package.json'
+          env:
+            Version: ${{ env.VERSION_TAG }}
+
+        - name: NPM Install & Build
+          run: |
+            npm install
+            npm build
+
+        - name: Commit Changes
+          run: |
+            git checkout ${{ env.BRANCH }}
+            git config --global user.email "actions@github.com"
+            git config --global user.name "GitHub Actions"
+            git add .
+            git commit -m "Bump version to $VERSION_TAG"
+            git push
+
+        # - name: Test JSON Variable Substitution
+        #   uses: microsoft/variable-substitution@v1
+        #   with:
+        #     files: 'react/src/config.json'
+        #   env:
+        #     AzureUserFlowLoginRegister: ${{ vars.TEST_AZURE_USER_FLOW_LOGIN_REGISTER }}
+        #     DotNetPrefix: ${{ vars.TEST_DOT_NET_PREFIX }}
+        #   if: env.ENVIRONMENT == 'test'
+
+        # - name: Stage JSON Variable Substitution
+        #   uses: microsoft/variable-substitution@v1
+        #   with:
+        #     files: 'react/src/config.json'
+        #   env:
+        #     AzureUserFlowLoginRegister: ${{ vars.STAGE_AZURE_USER_FLOW_LOGIN_REGISTER }}
+        #     DotNetPrefix: ${{ vars.STAGE_DOT_NET_PREFIX }}
+        #   if: env.ENVIRONMENT == 'stage'
+
+        # - name: Production JSON Variable Substitution
+        #   uses: microsoft/variable-substitution@v1
+        #   with:
+        #     files: 'react/src/config.json'
+        #   env:
+        #     AzureUserFlowLoginRegister: ${{ vars.PROD_AZURE_USER_FLOW_LOGIN_REGISTER }}
+        #     DotNetPrefix: ${{ vars.PROD_DOT_NET_PREFIX }}
+        #   if: env.ENVIRONMENT == 'prod'
+
+        - name: Deploy to Azure
+          run: |
+            echo "Hello, world"
+            ls .
