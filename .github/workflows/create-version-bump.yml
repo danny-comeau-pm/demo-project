@@ -45,7 +45,7 @@ jobs:
           with:
             files: 'package.json'
           env:
-            Version: ${{ env.VERSION_TAG }}
+            version: ${{ env.VERSION_TAG }}
 
         - name: NPM Install & Build
           run: |
