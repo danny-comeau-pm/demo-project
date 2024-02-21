@@ -1,5 +1,5 @@
-name: Deployment of Plante Moran Code Base
-run-name: Deploy ${{ inputs.environment }} Environment for Plante Moran Code Base with Version ${{ inputs.versionTag }} by ${{ github.actor }}
+name: Create Vesion Bump for Plante Moran Code Base
+run-name: Create Version Bump for Plante Moran Code Base with Version ${{ inputs.versionTag }} by ${{ github.actor }}
 on: 
   workflow_dispatch:
     inputs:
