@@ -50,7 +50,7 @@ jobs:
         - name: NPM Install & Build
           run: |
             npm install
-            npm build
+            npm run build
 
         - name: Commit Changes
           run: |
@@ -60,33 +60,6 @@ jobs:
             git add .
             git commit -m "Bump version to $VERSION_TAG"
             git push
-
-        # - name: Test JSON Variable Substitution
-        #   uses: microsoft/variable-substitution@v1
-        #   with:
-        #     files: 'react/src/config.json'
-        #   env:
-        #     AzureUserFlowLoginRegister: ${{ vars.TEST_AZURE_USER_FLOW_LOGIN_REGISTER }}
-        #     DotNetPrefix: ${{ vars.TEST_DOT_NET_PREFIX }}
-        #   if: env.ENVIRONMENT == 'test'
-
-        # - name: Stage JSON Variable Substitution
-        #   uses: microsoft/variable-substitution@v1
-        #   with:
-        #     files: 'react/src/config.json'
-        #   env:
-        #     AzureUserFlowLoginRegister: ${{ vars.STAGE_AZURE_USER_FLOW_LOGIN_REGISTER }}
-        #     DotNetPrefix: ${{ vars.STAGE_DOT_NET_PREFIX }}
-        #   if: env.ENVIRONMENT == 'stage'
-
-        # - name: Production JSON Variable Substitution
-        #   uses: microsoft/variable-substitution@v1
-        #   with:
-        #     files: 'react/src/config.json'
-        #   env:
-        #     AzureUserFlowLoginRegister: ${{ vars.PROD_AZURE_USER_FLOW_LOGIN_REGISTER }}
-        #     DotNetPrefix: ${{ vars.PROD_DOT_NET_PREFIX }}
-        #   if: env.ENVIRONMENT == 'prod'
 
         - name: Deploy to Azure
           run: |
