@@ -1,0 +1,104 @@
+name: Deployment of Plante Moran Code Base
+run-name: Deploy ${{ inputs.environment }} Environment for Plante Moran Code Base with Version ${{ inputs.versionTag }} by ${{ github.actor }}
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Deploy to Environment'
+        required: true
+        default: 'dev'
+        type: string
+      versionTag:
+        description: 'Release Tag to Publish'
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      environment:
+          description: 'Deploy to Environment'
+          required: true
+          default: 'dev'
+          type: choice
+          options:
+          - dev
+          - test
+          - stage
+          - prod
+      versionTag:
+        description: 'Release Tag to Publish'
+        required: true
+        type: string
+env:
+    ENVIRONMENT: ${{ inputs.environment }}
+    VERSION_TAG: ${{ inputs.versionTag }}
+jobs:
+
+
+    build-and-deploy-react-app:
+        runs-on: ubuntu-latest
+        strategy:
+          matrix:
+            node-version: [ 16.x ]
+        steps:
+        - name: Checkout Repository Via Tag
+          uses: actions/checkout@v3
+          with:
+            ref: ${{ env.VERSION_TAG }}
+            repository: 'danny-comeau-pm/demo-project'
+          
+        - name: Use Node.js ${{ matrix.node-version }}
+          uses: actions/setup-node@v3
+          with:
+            node-version: ${{ matrix.node-version }}
+
+        - name: Variable Subsitution
+          run: |
+            echo "Variable substitution happens here."
+            echo "My code example is commented out."
+
+        - name: NPM Install
+          run: npm install
+    
+        # - name: Set CI to false
+        #   run: echo "CI=false" >> $GITHUB_ENV
+
+        # - name: Development JSON Variable Substitution
+        #   uses: microsoft/variable-substitution@v1
+        #   with:
+        #     files: 'react/src/config.json'
+        #   env:
+        #     AzureUserFlowLoginRegister: ${{ vars.DEV_AZURE_USER_FLOW_LOGIN_REGISTER }}
+        #     DotNetPrefix: ${{ vars.DEV_DOT_NET_PREFIX }}
+        #   if: env.ENVIRONMENT == 'dev'
+
+        # - name: Test JSON Variable Substitution
+        #   uses: microsoft/variable-substitution@v1
+        #   with:
+        #     files: 'react/src/config.json'
+        #   env:
+        #     AzureUserFlowLoginRegister: ${{ vars.TEST_AZURE_USER_FLOW_LOGIN_REGISTER }}
+        #     DotNetPrefix: ${{ vars.TEST_DOT_NET_PREFIX }}
+        #   if: env.ENVIRONMENT == 'test'
+
+        # - name: Stage JSON Variable Substitution
+        #   uses: microsoft/variable-substitution@v1
+        #   with:
+        #     files: 'react/src/config.json'
+        #   env:
+        #     AzureUserFlowLoginRegister: ${{ vars.STAGE_AZURE_USER_FLOW_LOGIN_REGISTER }}
+        #     DotNetPrefix: ${{ vars.STAGE_DOT_NET_PREFIX }}
+        #   if: env.ENVIRONMENT == 'stage'
+
+        # - name: Production JSON Variable Substitution
+        #   uses: microsoft/variable-substitution@v1
+        #   with:
+        #     files: 'react/src/config.json'
+        #   env:
+        #     AzureUserFlowLoginRegister: ${{ vars.PROD_AZURE_USER_FLOW_LOGIN_REGISTER }}
+        #     DotNetPrefix: ${{ vars.PROD_DOT_NET_PREFIX }}
+        #   if: env.ENVIRONMENT == 'prod'
+
+        - name: Deploy to Azure
+          run: |
+            echo "Hello, world"
+            ls .
