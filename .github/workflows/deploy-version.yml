@@ -1,5 +1,5 @@
-name: Deployment of Wealth Build Dashboard
-run-name: Deploy ${{ inputs.environment }} Environment for Wealth Build Dashboard with Version ${{ inputs.versionTag }} by ${{ github.actor }}
+name: Deployment of Plante Moran Code Base
+run-name: Deploy ${{ inputs.environment }} Environment for Plante Moran Code Base with Version ${{ inputs.versionTag }} by ${{ github.actor }}
 on: 
   workflow_dispatch:
     inputs:
