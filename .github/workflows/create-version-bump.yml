@@ -1,5 +1,5 @@
 name: Create Vesion Bump for Plante Moran Code Base
-run-name: Create Version Bump for Plante Moran Code Base with Version ${{ inputs.versionTag }} by ${{ github.actor }}
+run-name: Create Version Bump for Plante Moran Code Base with Version v${{ inputs.versionTag }} by ${{ github.actor }}
 on: 
   workflow_dispatch:
     inputs:
