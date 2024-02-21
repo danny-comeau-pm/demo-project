@@ -45,7 +45,7 @@ jobs:
             echo "My code example is commented out."
 
         - name: NPM Install
-          run: npm insall
+          run: npm install
     
         # - name: Set CI to false
         #   run: echo "CI=false" >> $GITHUB_ENV
