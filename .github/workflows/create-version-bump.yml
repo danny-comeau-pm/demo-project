@@ -3,7 +3,6 @@ run-name: Create Version Bump for Plante Moran Code Base with Version ${{ inputs
 on: 
   workflow_dispatch:
     inputs:
-      environment:
       branch:
         description: 'Branch Name'
         required: true
@@ -34,9 +33,6 @@ jobs:
           run: |
             echo "Variable substitution happens here."
             echo "My code example is commented out."
-
-        - name: NPM Install
-          run: npm insall
     
         - name: Set CI to false
           run: echo "CI=false" >> $GITHUB_ENV
