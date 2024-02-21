@@ -33,6 +33,9 @@ jobs:
           run: |
             echo "Variable substitution happens here."
             echo "My code example is commented out."
+
+        - name: File Check
+          run: ls
     
         - name: Set CI to false
           run: echo "CI=false" >> $GITHUB_ENV
