@@ -43,6 +43,9 @@ jobs:
           run: |
             echo "Variable substitution happens here."
             echo "My code example is commented out."
+
+        - name: NPM Install
+          run: npm insall
     
         # - name: Set CI to false
         #   run: echo "CI=false" >> $GITHUB_ENV
