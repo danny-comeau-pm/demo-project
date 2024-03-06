@@ -1,0 +1,83 @@
+name: Node Version Bump
+run-name: Bump version to v${{ inputs.versionTag }} by ${{ github.actor }}
+on: 
+  workflow_dispatch:
+    inputs:
+      initials:
+        description: 'Developers Initials'
+        required: true
+        type: string
+      versionTag:
+        description: 'Create Version'
+        required: true
+        type: string
+env:
+    BRANCH: feature/${{ inputs.initials }}-version-${{ inputs.versionTag }}
+    TITLE: Bump version to v${{ inputs.versionTag }}
+    VERSION_TAG: ${{ inputs.versionTag }}
+    GITHUB_TOKEN: ${{ secrets.TEST_COMMIT_TOKEN }}
+jobs:
+    build-and-deploy-react-app:
+        runs-on: ubuntu-latest
+        strategy:
+          matrix:
+            node-version: [ vars.NODE_VERSION ]
+        steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v3
+          with: 
+            fetch-depth: 0
+            token: ${{ secrets.TEST_COMMIT_TOKEN }}
+          
+        - name: Use Node.js ${{ matrix.node-version }}
+          uses: actions/setup-node@v3
+          with:
+            node-version: ${{ matrix.node-version }}
+
+        - name: Variable Substitution
+          run: |
+            echo "Variable substitution happens here."
+            echo "My code example is commented out."
+    
+        - name: Set CI to false
+          run: echo "CI=false" >> $GITHUB_ENV
+
+        - name: JSON Variable Substitution
+          uses: microsoft/variable-substitution@v1
+          with:
+            files: 'package.json'
+          env:
+            version: ${{ env.VERSION_TAG }}
+
+        - name: NPM Install & Build
+          run: |
+            npm install
+            npm run build
+        
+        - name: Create New Branch
+          run: |
+            git checkout -b ${{ env.BRANCH }}
+
+        - name: Commit Changes
+          run: |
+            git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+            git config --global user.name ${{ github.actor }}
+            git add .
+            git commit -m "Bump version to $VERSION_TAG"
+            git push --set-upstream origin ${{ env.BRANCH }}
+
+        # - name: Create Pull Request
+        #   uses: repo-sync/pull-request@v2
+        #   with:
+        #     github_token: ${{ secrets.GITHUB_TOKEN }}
+        #     pr_title: "Bump version to v${{ env.VERSION_TAG }}"
+        #     pr_body: "This is an automated PR for the version bump to ${{ env.VERSION_TAG }}"
+        #     source_branch: ${{ env.NEW_BRANCH }}
+        #     destination_branch: ${{ env.BRANCH }}
+
+        - name: Create Pull Request
+          run: >
+            gh pr create
+            --base main
+            --head ${{ env.BRANCH }}
+            --fill ${{ env.TITLE }}
